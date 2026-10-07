@@ -178,7 +178,7 @@ button:focus-visible { outline: 3px solid var(--salida); outline-offset: 2px; }
   color: var(--claro); 
   background: #1b162f; 
   border: 2px solid #362d59;
-  text-align: left; 
+  text-align: center; 
   border-radius: 8px;
 }
 #pOpciones button:hover { background: #272044; border-color: var(--jugador); }
