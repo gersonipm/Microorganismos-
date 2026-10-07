@@ -1,0 +1,370 @@
+:root {
+  --papel: #161224;             /* Fondo de tarjetas y paneles (morado oscuro elegante) */
+  --cuadricula: #2a2242;        /* Color de las líneas de la rejilla */
+  --tinta: #f4f4f6;             /* Color principal de textos (blanco suave) */
+  --jugador: #ff5c8a;           /* Color del jugador (rosa/magenta brillante de los botones) */
+  --salida: #f0a22e;            /* Color del objetivo/salida (mantiene el contraste amarillo-naranja) */
+  --error: #ff4757;             /* Rojo de error */
+  --error-claro: #ff6b81;       
+  --claro: #ffffff;             /* Blanco puro para títulos */
+  --acierto: #2ed573;           /* Verde de acierto */
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Atkinson Hyperlegible", system-ui, sans-serif;
+  color: var(--tinta);
+  background: #0b0914;          /* Fondo general negro/morado muy oscuro idéntico a la web principal */
+}
+
+/* ===== Fondo animado adaptado ===== */
+.fondo {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  background: linear-gradient(160deg, #0b0914, #120e21 55%, #1a1232);
+}
+.fondo::before, .fondo::after {
+  content: "";
+  position: absolute;
+  width: 65vmax;
+  height: 65vmax;
+  border-radius: 50%;
+  filter: blur(25px);
+}
+.fondo::before {
+  top: -25vmax; left: -20vmax;
+  background: radial-gradient(circle, rgba(255, 92, 138, 0.15), transparent 65%);
+  animation: deriva-a 22s ease-in-out infinite alternate;
+}
+.fondo::after {
+  bottom: -28vmax; right: -22vmax;
+  background: radial-gradient(circle, rgba(80, 50, 150, 0.25), transparent 65%);
+  animation: deriva-b 27s ease-in-out infinite alternate;
+}
+.rejilla {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(140, 120, 200, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(140, 120, 200, 0.07) 1px, transparent 1px);
+  background-size: 52px 52px;
+  mask-image: radial-gradient(ellipse at center, #000 30%, transparent 85%);
+  animation: rejilla 5s linear infinite;
+}
+.cubo {
+  position: absolute;
+  bottom: -80px;
+  left: var(--x);
+  width: var(--s);
+  height: var(--s);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.03);
+  animation: subir var(--t) linear var(--d) infinite;
+}
+.cubo:nth-child(2)  { --x: 6%;  --s: 28px; --t: 20s; --d: -2s; }
+.cubo:nth-child(3)  { --x: 15%; --s: 46px; --t: 28s; --d: -14s; }
+.cubo:nth-child(4)  { --x: 27%; --s: 20px; --t: 17s; --d: -7s; }
+.cubo:nth-child(5)  { --x: 38%; --s: 34px; --t: 24s; --d: -19s; }
+.cubo:nth-child(6)  { --x: 49%; --s: 22px; --t: 19s; --d: -4s; }
+.cubo:nth-child(7)  { --x: 59%; --s: 52px; --t: 31s; --d: -11s; }
+.cubo:nth-child(8)  { --x: 69%; --s: 26px; --t: 21s; --d: -16s; }
+.cubo:nth-child(9)  { --x: 79%; --s: 38px; --t: 26s; --d: -9s; }
+.cubo:nth-child(10) { --x: 88%; --s: 18px; --t: 16s; --d: -1s; }
+.cubo:nth-child(11) { --x: 95%; --s: 30px; --t: 23s; --d: -13s; }
+
+@keyframes deriva-a { to { transform: translate(35vmax, 22vmax) scale(1.2); } }
+@keyframes deriva-b { to { transform: translate(-30vmax, -20vmax) scale(1.15); } }
+@keyframes rejilla  { to { background-position: 0 52px, 52px 0; } }
+@keyframes subir {
+  from { transform: translateY(0) rotate(0deg); opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  to   { transform: translateY(-115vh) rotate(300deg); opacity: 0; }
+}
+
+main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+header {
+  color: var(--claro);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+h1, h2 {
+  font-family: "Bricolage Grotesque", system-ui, sans-serif;
+  font-weight: 800;
+  margin: 0;
+  color: var(--claro);
+}
+h1 { font-size: 2.4rem; letter-spacing: -0.02em; }
+
+.hud { display: flex; gap: 20px; margin: 0; }
+.hud div { text-align: right; }
+.hud dt { font-size: 0.85rem; color: #a19db5; }
+.hud dd { margin: 0; font-family: "Bricolage Grotesque", sans-serif; font-size: 1.8rem; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--claro); }
+#tiempo.poco { color: var(--error-claro); }
+
+.barra { height: 8px; margin: 10px 0; background: rgba(255, 255, 255, 0.1); border-radius: 4px; overflow: hidden; }
+.barra span { display: block; height: 100%; width: 100%; background: var(--jugador); transition: width 0.1s linear; }
+.barra span.poco { background: var(--error); }
+
+.tablero {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-height: 300px;
+}
+
+/* Lienzo del laberinto con fondo oscuro e interior estilizado */
+canvas { 
+  background: #110e1b; 
+  border: 2px solid #2a2242; 
+  border-radius: 8px; 
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5); 
+}
+
+/* Panel de preguntas / mensajes con estilo oscuro y elegante */
+.panel {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 24px;
+  text-align: center;
+  background: rgba(18, 14, 33, 0.96);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  color: var(--tinta);
+}
+.panel[hidden] { display: none; }
+.panel h2 { font-size: 1.8rem; color: var(--claro); }
+.panel p { max-width: 46ch; margin: 0; line-height: 1.5; color: #d0cce1; }
+
+#pOpciones { display: grid; gap: 10px; width: min(100%, 420px); }
+#pOpciones:empty { display: none; }
+
+button {
+  font: inherit;
+  font-weight: 700;
+  color: #fff;
+  background: var(--jugador);
+  border: 2px solid transparent;
+  border-radius: 999px;
+  padding: 10px 24px;
+  cursor: pointer;
+  transition: transform 0.15s, background 0.15s;
+}
+button:hover { background: #e04a74; transform: translateY(-1px); }
+button:focus-visible { outline: 3px solid var(--salida); outline-offset: 2px; }
+
+#pOpciones button { 
+  color: var(--claro); 
+  background: #1b162f; 
+  border: 2px solid #362d59;
+  text-align: left; 
+  border-radius: 8px;
+}
+#pOpciones button:hover { background: #272044; border-color: var(--jugador); }
+#pBoton[hidden] { display: none; }
+
+.cruz { display: none; }
+@media (pointer: coarse) {
+  .cruz {
+    display: grid;
+    grid-template-columns: repeat(3, 64px);
+    grid-template-areas: ". up ." "left down right";
+    gap: 8px;
+    justify-content: center;
+    margin-top: 14px;
+  }
+  .cruz button { padding: 0; height: 56px; font-size: 1.4rem; touch-action: manipulation; background: #1b162f; border: 2px solid #362d59; border-radius: 12px; }
+  .cruz button[data-d="1"] { grid-area: up; }
+  .cruz button[data-d="8"] { grid-area: left; }
+  .cruz button[data-d="4"] { grid-area: down; }
+  .cruz button[data-d="2"] { grid-area: right; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .barra span { transition: none; }
+  .fondo::before, .fondo::after, .rejilla, .cubo { animation: none; }
+  .cubo { opacity: 0.5; bottom: 20%; }
+}
+
+/* ===== Botón para volver a MicroMundo ===== */
+.volver {
+  display: inline-block;
+  margin-bottom: 12px;
+  padding: 8px 16px;
+  font-weight: 700;
+  color: var(--claro);
+  text-decoration: none;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  backdrop-filter: blur(4px);
+  transition: background 0.2s, transform 0.2s, border-color 0.2s;
+}
+.volver:hover { background: rgba(255, 255, 255, 0.1); border-color: var(--jugador); transform: translateX(-3px); }
+.volver:focus-visible { outline: 3px solid var(--salida); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .volver { transition: none; }
+  .volver:hover { transform: none; }
+}
+
+/* ===== ESTILOS PARA LUCES LED Y BRILLOS ===== */
+
+/* Orbes de luz ambiental en las esquinas de la página */
+.marco-leds-ambientales {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.led-orbe {
+  position: absolute;
+  width: 350px;
+  height: 350px;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.35;
+  mix-blend-mode: screen;
+  animation: pulso-led 6s ease-in-out infinite alternate;
+}
+
+.led-tl { top: -150px; left: -150px; background: rgba(255, 92, 138, 0.4); } /* LED Rosa */
+.led-tr { top: -150px; right: -150px; background: rgba(14, 154, 167, 0.4); animation-delay: 2s; } /* LED Cian */
+.led-bl { bottom: -150px; left: -150px; background: rgba(120, 50, 255, 0.4); animation-delay: 4s; } /* LED Morado */
+.led-br { bottom: -150px; right: -150px; background: rgba(240, 162, 46, 0.35); animation-delay: 1s; } /* LED Naranja */
+
+@keyframes pulso-led {
+  0% { transform: scale(0.9); opacity: 0.25; }
+  100% { transform: scale(1.2); opacity: 0.5; }
+}
+
+/* Efecto LED integrado en los botones */
+.btn-led {
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+/* Sombra de neón base para los botones */
+.btn-led:hover {
+  box-shadow: 0 0 20px rgba(255, 92, 138, 0.5), inset 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+/* Destello de luz que sigue el cursor del mouse dentro del botón */
+.led-brillo {
+  position: absolute;
+  top: var(--y-cursor, 50%);
+  left: var(--x-cursor, 50%);
+  width: 120px;
+  height: 120px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.6) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.btn-led:hover .led-brillo {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .led-orbe { animation: none; }
+  .btn-led { transition: none; }
+}
+
+/* ===== MARCO DE LUCES LED PERIMETRALES ===== */
+.marco-leds-ambientales {
+  position: fixed;
+  inset: 0;
+  pointer-events: none; /* Permite hacer clic a través del brillo sin estorbar */
+  z-index: 9999;        /* Se coloca por encima de cualquier fondo oscuro de la página */
+  overflow: hidden;
+}
+
+/* Resplandor continuo a lo largo de todo el borde interior de la pantalla */
+.marco-leds-ambientales::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  box-shadow: inset 0 0 30px rgba(255, 92, 138, 0.35),  /* Brillo rosado perimetral */
+              inset 0 0 60px rgba(120, 50, 255, 0.25); /* Brillo morado perimetral */
+}
+
+/* Orbes LED gigantes en las esquinas para iluminar los laterales y centros */
+.led-orbe {
+  position: absolute;
+  width: 450px;
+  height: 450px;
+  border-radius: 50%;
+  filter: blur(55px);
+  opacity: 0.65;
+  mix-blend-mode: screen;
+  animation: pulso-led 5s ease-in-out infinite alternate;
+}
+
+.led-tl { top: -300px; left: -300px; background: rgba(255, 92, 138, 0.8); } /* Esquina superior izquierda (Rosa) */
+.led-tr { top: -300px; right: -300px; background: rgba(14, 154, 167, 0.7); animation-delay: 1.5s; } /* Esquina superior derecha (Cian) */
+.led-bl { bottom: -300px; left: -300px; background: rgba(120, 50, 255, 0.7); animation-delay: 3s; } /* Esquina inferior izquierda (Morado) */
+.led-br { bottom: -300px; right: -300px; background: rgba(240, 162, 46, 0.7); animation-delay: 2s; } /* Esquina inferior derecha (Naranja) */
+
+@keyframes pulso-led {
+  0% { transform: scale(0.85); opacity: 0.45; }
+  100% { transform: scale(1.15); opacity: 0.75; }
+}
+
+/* ===== ESTILOS LED PARA BOTONES ===== */
+.btn-led {
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+.btn-led:hover {
+  box-shadow: 0 0 25px rgba(255, 92, 138, 0.6), inset 0 0 12px rgba(255, 255, 255, 0.25);
+}
+
+.led-brillo {
+  position: absolute;
+  top: var(--y-cursor, 50%);
+  left: var(--x-cursor, 50%);
+  width: 120px;
+  height: 120px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.65) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.btn-led:hover .led-brillo {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .led-orbe { animation: none; }
+  .btn-led { transition: none; }
+}

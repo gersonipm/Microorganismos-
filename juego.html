@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Laberinto de preguntas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="juego.css">
+</head>
+<body>
+  <div class="fondo" aria-hidden="true"><span class="rejilla"></span><span class="cubo"></span><span class="cubo"></span><span class="cubo"></span><span class="cubo"></span><span class="cubo"></span><span class="cubo"></span><span class="cubo"></span><span class="cubo"></span><span class="cubo"></span><span class="cubo"></span></div>
+  <main>
+    <a class="volver" href="MicroMundo.html">← Volver a MicroMundo</a>
+    <header>
+      <h1>Laberinto de las preguntas</h1>
+      <dl class="hud">
+        <div><dt>Nivel</dt><dd id="nivel">1</dd></div>
+        <div><dt>Tiempo</dt><dd id="tiempo">0</dd></div>
+        <div><dt>Mejor nivel</dt><dd id="mejor">1</dd></div>
+      </dl>
+    </header>
+
+    <div class="barra"><span id="barra"></span></div>
+
+    <div class="tablero" id="tablero">
+      <canvas id="lienzo" aria-label="Laberinto: llega al cuadro amarillo"></canvas>
+      <section class="panel" id="panel" role="dialog" aria-live="polite">
+        <h2 id="pTitulo"></h2>
+        <p id="pTexto"></p>
+        <div id="pOpciones"></div>
+        <button id="pBoton" type="button"></button>
+      </section>
+    </div>
+
+    <div class="cruz" aria-label="Controles táctiles">
+      <button type="button" data-d="1" aria-label="Arriba">▲</button>
+      <button type="button" data-d="8" aria-label="Izquierda">◀</button>
+      <button type="button" data-d="4" aria-label="Abajo">▼</button>
+      <button type="button" data-d="2" aria-label="Derecha">▶</button>
+    </div>
+  </main>
+<script src="leds.js"></script>
+  <script src="juego.js"></script>
+</body>
+</html>

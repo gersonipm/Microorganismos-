@@ -1,0 +1,791 @@
+/* ==========================================================================
+   MicroMundo · Hoja de estilos principal (Optimizado para Producción)
+   Estructura: 1. Variables · 2. Base · 3. Layout · 4. Navegación · 5. Portada 
+               6. Componentes · 7. Esquema · 8. Infografía · 9. Juego & Quiz 
+               10. Utilidades y Accesibilidad
+   ========================================================================== */
+
+/* 1. VARIABLES (Sistema de diseño adaptativo claro / oscuro)
+   -------------------------------------------------------------------------- */
+:root {
+  /* Modo Claro */
+  --bg: #F4F6FA;
+  --surface: #FFFFFF;
+  --ink: #141026;
+  --muted: #625C7E;
+  --card: #FFFFFF;
+  --card-hover: #F8F9FC;
+  --line: #D5DBEC;
+  --shadow: 0 10px 25px -5px rgba(20, 16, 38, 0.05), 0 8px 10px -6px rgba(20, 16, 38, 0.05);
+
+  /* Colores de Categoría / Acentos */
+  --vio: #5A35B0;    /* Bacterias */
+  --pink: #E03175;   /* Acento principal / CTA */
+  --amb: #B87900;    /* Hongos */
+  --teal: #0D9488;   /* Levaduras */
+  --ok: #10B981;
+  --bad: #EF4444;
+
+  --transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Modo Oscuro */
+    --bg: #0C0A15;
+    --surface: #141124;
+    --ink: #F3F1FA;
+    --muted: #9E97BA;
+    --card: #171428;
+    --card-hover: #1E1A36;
+    --line: #2A2447;
+    --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+
+    --vio: #9D7FEA;
+    --pink: #FF6B9B;
+    --amb: #F6C453;
+    --teal: #2DD4BF;
+    --ok: #34D399;
+    --bad: #F87171;
+  }
+}
+
+
+/* 2. BASE Y RESET
+   -------------------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 70px);
+}
+
+body {
+  margin: 0;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background-color: var(--bg);
+  color: var(--ink);
+  font: 17px/1.7 'Figtree', system-ui, -apple-system, sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  margin: 0;
+  font-family: "Instrument Serif", Georgia, serif;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+h1 {
+  font-size: clamp(42px, 7vw, 72px);
+  line-height: 1;
+}
+
+h2 {
+  font-size: clamp(32px, 4.5vw, 48px);
+  line-height: 1.1;
+}
+
+p {
+  max-width: 68ch;
+  margin: 0 0 1em;
+  color: var(--muted);
+}
+
+/* Enlaces y Botones generales */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  color: var(--ink);
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+button:focus-visible,
+a:focus-visible {
+  outline: 3px solid var(--pink);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+canvas {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  touch-action: manipulation;
+}
+
+/* Contenedor central principal */
+.w {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+
+/* 3. NAVEGACIÓN STICKY MODERNA
+   -------------------------------------------------------------------------- */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 0;
+  background-color: var(--bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+  font-size: 14px;
+  transition: var(--transition-smooth);
+}
+
+nav div {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 20px;
+}
+
+nav a {
+  color: var(--muted);
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+nav a:hover,
+nav a.go {
+  color: var(--pink);
+}
+
+nav a.go {
+  font-weight: 700;
+}
+
+nav b {
+  font-family: "Instrument Serif", serif;
+  font-size: 32px;
+  color: var(--ink);
+}
+
+nav .brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+nav a.logo {
+  display: block;
+  line-height: 0;
+}
+
+nav .logo img {
+  display: block;
+  width: auto;
+  height: 52px;
+  border-radius: 10px;
+  object-fit: contain;
+}
+
+
+/* 4. PORTADA (Hero Section)
+   -------------------------------------------------------------------------- */
+.hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: center;
+  padding: 56px 0 40px;
+}
+
+.lead {
+  max-width: 44ch;
+  margin: 16px 0 24px;
+  font-size: 18px;
+  color: var(--muted);
+}
+
+.cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* Lente del microscopio con efectos visuales refinados */
+.scope {
+  width: 100%;
+  max-width: 460px;
+  justify-self: center;
+  padding: 16px;
+  border-radius: 50%;
+  background: repeating-conic-gradient(var(--line) 0 .4deg, transparent .4deg 3.5deg);
+  box-shadow: var(--shadow);
+}
+
+.scope > div {
+  overflow: hidden;
+  border-radius: 50%;
+  background: #070514;
+  box-shadow: 0 0 0 8px var(--bg), 0 0 0 10px var(--ink);
+}
+
+.cap {
+  margin: 12px 0 0;
+  text-align: center;
+  font-size: 13.5px;
+  color: var(--muted);
+}
+
+/* Ficha del organismo seleccionado */
+.fic {
+  min-height: 120px;
+  margin-top: 20px;
+  padding: 16px 20px;
+  background-color: var(--card);
+  border: 1px solid var(--line);
+  border-left: 6px solid var(--vio);
+  border-radius: 8px 14px 14px 8px;
+  box-shadow: var(--shadow);
+  transition: var(--transition-smooth);
+}
+
+.fic[data-g="H"] { border-left-color: var(--amb); }
+.fic[data-g="Y"] { border-left-color: var(--teal); }
+
+.fic h3 {
+  font-size: 28px;
+  font-style: italic;
+  color: var(--ink);
+}
+
+.fic__text {
+  margin: 6px 0 0;
+}
+
+.fic__text--muted {
+  color: var(--muted);
+}
+
+.tg {
+  display: inline-block;
+  margin: 6px 6px 4px 0;
+  padding: 2px 10px;
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  background-color: var(--bg);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+
+/* 5. SISTEMA DE BOTONES
+   -------------------------------------------------------------------------- */
+.chip,
+.btn {
+  padding: 8px 18px;
+  background-color: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--ink);
+  transition: var(--transition-smooth);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.chip:hover,
+.btn:hover {
+  border-color: var(--pink);
+  transform: translateY(-1px);
+}
+
+.chip[aria-pressed="true"],
+.btn.on {
+  background-color: var(--ink);
+  border-color: var(--ink);
+  color: var(--bg);
+}
+
+a.btn {
+  display: inline-block;
+  text-decoration: none;
+}
+
+.cta a,
+.jg a {
+  padding: 12px 26px;
+  font-size: 16px;
+  font-weight: 700;
+  background-color: var(--pink);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(224, 49, 117, 0.3);
+}
+
+.cta a:hover,
+.jg a:hover {
+  filter: brightness(1.1);
+  transform: translateY(-2px);
+}
+
+
+/* 6. SECCIONES Y CONTENIDO CIENTÍFICO (Trilogía)
+   -------------------------------------------------------------------------- */
+section {
+  margin-top: 40px;
+  padding: 64px 0 20px;
+  border-top: 1px solid var(--line);
+}
+
+.fg {
+  margin: 0 0 8px;
+  font-size: 13.5px;
+  font-style: italic;
+  color: var(--muted);
+  letter-spacing: 0.03em;
+}
+
+.tri {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+  margin-top: 24px;
+}
+
+.tri > div {
+  padding: 24px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  transition: var(--transition-smooth);
+}
+
+.tri > div:hover {
+  border-color: var(--pink);
+  transform: translateY(-4px);
+}
+
+.tri svg {
+  width: 56px;
+  height: 56px;
+  margin-bottom: 12px;
+  fill: var(--pink);
+}
+
+.tri h3 {
+  font-size: 28px;
+}
+
+.tri p {
+  margin: 8px 0 0;
+  font-size: 15.5px;
+}
+
+
+/* 7. ESQUEMA INTERACTIVO (Pasos)
+   -------------------------------------------------------------------------- */
+.steps {
+  position: relative;
+  display: flex;
+  margin: 28px 0 20px;
+  gap: 8px;
+}
+
+.steps button {
+  flex: 1;
+  padding: 8px 4px;
+  background: none;
+  border: 0;
+  text-align: center;
+  font-size: 13.5px;
+  color: var(--muted);
+  border-radius: 8px;
+  transition: var(--transition-smooth);
+}
+
+.steps button:hover {
+  background-color: var(--card-hover);
+  color: var(--ink);
+}
+
+.steps i {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  margin: 0 auto 8px;
+  background-color: var(--card);
+  border: 1.5px solid var(--line);
+  border-radius: 50%;
+  font: italic 22px "Instrument Serif", serif;
+  color: var(--ink);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+}
+
+.steps button[aria-current="true"] {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.steps button[aria-current="true"] i {
+  background-color: var(--vio);
+  border-color: var(--vio);
+  color: #fff;
+}
+
+.tr {
+  height: 4px;
+  margin-bottom: 20px;
+  background-color: var(--line);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.tr b {
+  display: block;
+  height: 100%;
+  background-color: var(--vio);
+  border-radius: 4px;
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.pn {
+  min-height: 130px;
+  padding: 24px;
+  background-color: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+}
+
+.pn h3 {
+  font-size: 28px;
+}
+
+.pn p {
+  margin: 8px 0 0;
+}
+
+
+/* 8. INFOGRAFÍA Y TARJETAS DE ORGANISMOS
+   -------------------------------------------------------------------------- */
+.summary {
+  color: var(--muted);
+}
+
+.fil {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 20px 0;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.cd {
+  padding: 16px;
+  background-color: var(--card);
+  border: 1px solid var(--line);
+  border-top: 5px solid var(--c);
+  border-radius: 12px;
+  font-size: 15px;
+  line-height: 1.5;
+  box-shadow: var(--shadow);
+  transition: var(--transition-smooth);
+}
+
+.cd:hover {
+  transform: translateY(-3px);
+  border-color: var(--c);
+}
+
+.cd b {
+  display: block;
+  font: italic 22px "Instrument Serif", serif;
+  margin-bottom: 4px;
+}
+
+.cd span {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.leg {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin-top: 16px;
+  font-size: 13.5px;
+  color: var(--muted);
+}
+
+.leg i {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 6px;
+  background-color: var(--c);
+  border-radius: 50%;
+  vertical-align: -1px;
+}
+
+.cd--B, .leg__item--B { --c: var(--vio); }
+.cd--H, .leg__item--H { --c: var(--amb); }
+.cd--Y, .leg__item--Y { --c: var(--teal); }
+
+
+/* 9. JUEGO Y EVALUACIÓN (Quiz)
+   -------------------------------------------------------------------------- */
+.jg {
+  margin-top: 24px;
+  padding: 24px 28px;
+  background-color: var(--card);
+  border: 1px solid var(--line);
+  border-left: 6px solid var(--pink);
+  border-radius: 8px 16px 16px 8px;
+  box-shadow: var(--shadow);
+}
+
+.jg p {
+  margin-top: 0;
+}
+
+.bar {
+  height: 8px;
+  margin: 12px 0 20px;
+  overflow: hidden;
+  background-color: var(--line);
+  border-radius: 8px;
+}
+
+.bar b {
+  display: block;
+  width: 0;
+  height: 100%;
+  background-color: var(--vio);
+  transition: width 0.3s ease;
+}
+
+.qz {
+  margin: 16px 0;
+  padding: 20px 22px;
+  background-color: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+}
+
+.qz p {
+  margin: 0 0 12px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.op {
+  display: block;
+  width: 100%;
+  margin: 10px 0;
+  padding: 12px 16px;
+  background-color: var(--bg);
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  text-align: left;
+  font-size: 16.5px;
+  font-style: italic;
+  color: var(--ink);
+  transition: var(--transition-smooth);
+}
+
+.op--quiz {
+  font-style: normal;
+}
+
+.op:hover:not(:disabled) {
+  border-color: var(--vio);
+  background-color: var(--card-hover);
+}
+
+.ok {
+  background-color: var(--ok) !important;
+  border-color: var(--ok) !important;
+  color: #fff !important;
+}
+
+.no {
+  background-color: var(--bad) !important;
+  border-color: var(--bad) !important;
+  color: #fff !important;
+}
+
+.fb {
+  margin-top: 8px;
+  font-size: 14.5px;
+  color: var(--muted);
+}
+
+.res {
+  margin: 16px 0;
+  font: 32px "Instrument Serif", serif;
+  color: var(--ink);
+}
+
+
+/* 10. PIE DE PÁGINA
+   -------------------------------------------------------------------------- */
+footer {
+  margin-top: 80px;
+  padding: 32px 0 48px;
+  border-top: 1px solid var(--line);
+  font-size: 14px;
+  color: var(--muted);
+  text-align: center;
+}
+
+
+/* 11. RESPONSIVE Y ACCESIBILIDAD AVANZADA
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  .hero {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    padding-top: 24px;
+  }
+
+  .tri {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  nav {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px 0;
+  }
+
+  nav div {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .steps button {
+    font-size: 11px;
+  }
+
+  .steps i {
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* ===== MARCO DE LUCES LED PERIMETRALES ===== */
+.marco-leds-ambientales {
+  position: fixed;
+  inset: 0;
+  pointer-events: none; /* Permite hacer clic a través del brillo sin estorbar */
+  z-index: 9999;        /* Se coloca por encima de cualquier fondo oscuro de la página */
+  overflow: hidden;
+}
+
+/* Resplandor continuo a lo largo de todo el borde interior de la pantalla */
+.marco-leds-ambientales::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  box-shadow: inset 0 0 30px rgba(255, 92, 138, 0.35),  /* Brillo rosado perimetral */
+              inset 0 0 60px rgba(120, 50, 255, 0.25); /* Brillo morado perimetral */
+}
+
+/* Orbes LED gigantes en las esquinas para iluminar los laterales y centros */
+.led-orbe {
+  position: absolute;
+  width: 450px;
+  height: 450px;
+  border-radius: 50%;
+  filter: blur(55px);
+  opacity: 0.65;
+  mix-blend-mode: screen;
+  animation: pulso-led 5s ease-in-out infinite alternate;
+}
+
+.led-tl { top: -450px; left: -350px; background: rgba(255, 92, 138, 0.8); } /* Esquina superior izquierda (Rosa) */
+.led-tr { top: -450px; right: -350px; background: rgba(14, 154, 167, 0.7); animation-delay: 1.5s; } /* Esquina superior derecha (Cian) */
+.led-bl { bottom: -450px; left: -350px; background: rgba(120, 50, 255, 0.7); animation-delay: 3s; } /* Esquina inferior izquierda (Morado) */
+.led-br { bottom: -450px; right: -350px; background: rgba(240, 162, 46, 0.7); animation-delay: 2s; } /* Esquina inferior derecha (Naranja) */
+
+@keyframes pulso-led {
+  0% { transform: scale(0.85); opacity: 0.45; }
+  100% { transform: scale(1.15); opacity: 0.75; }
+}
+
+/* ===== ESTILOS LED PARA BOTONES ===== */
+.btn-led {
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+.btn-led:hover {
+  box-shadow: 0 0 25px rgba(255, 92, 138, 0.6), inset 0 0 12px rgba(255, 255, 255, 0.25);
+}
+
+.led-brillo {
+  position: absolute;
+  top: var(--y-cursor, 50%);
+  left: var(--x-cursor, 50%);
+  width: 120px;
+  height: 120px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.65) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.btn-led:hover .led-brillo {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .led-orbe { animation: none; }
+  .btn-led { transition: none; }
+}
